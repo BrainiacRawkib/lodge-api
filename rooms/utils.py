@@ -14,7 +14,7 @@ def generate_room_code():
         else:
             # if False, stop.
             break
-    return code
+    return f'ROOM_{code}'
 
 
 # create
