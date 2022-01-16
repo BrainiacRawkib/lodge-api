@@ -15,6 +15,7 @@ def generate_room_code():
         if Room.objects.filter(code=code).exists():
             # if True, generate another code
             generate_room_code()
+
         else:
             # if False, stop.
             break
@@ -32,8 +33,18 @@ def create_room_block(name, total_rooms):
         return None
 
 
-def create_room():
-    pass
+def create_room(room_block, room_no):
+    try:
+        return Room.objects.create(
+            code=generate_room_code(),
+            room_block=room_block,
+            room_no=room_no,
+        )
+
+    except Exception as e:
+        logger.error('create_room@Error')
+        logger.error(e)
+        return None
 
 
 # get
