@@ -27,5 +27,5 @@ def create_room():
 
 
 # get
-def get_room(room_):
+def get_room(room_code):
     pass
