@@ -55,4 +55,10 @@ def create_room(room_block, room_no):
 
 # GET MODELS
 def get_room(room_code):
-    pass
+    try:
+        return Room.objects.get(code=room_code)
+
+    except Exception as e:
+        logger.error('get_room@Error')
+        logger.error(e)
+        return None
