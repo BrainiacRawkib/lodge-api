@@ -28,7 +28,7 @@ def generate_room_code():
         return None
 
 
-# create
+# CREATE MODELS
 def create_room_block(name, total_rooms):
     try:
         return Block.objects.create(name=name, total_rooms=total_rooms)
@@ -53,6 +53,6 @@ def create_room(room_block, room_no):
         return None
 
 
-# get
+# GET MODELS
 def get_room(room_code):
     pass
