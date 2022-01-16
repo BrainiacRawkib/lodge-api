@@ -2,6 +2,10 @@ import string
 import random
 from .models import Block, Room
 
+import logging
+
+logger = logging.getLogger(__name__)
+
 
 # generate
 def generate_room_code():
@@ -18,8 +22,14 @@ def generate_room_code():
 
 
 # create
-def create_block():
-    pass
+def create_room_block(name, total_rooms):
+    try:
+        return Block.objects.create(name=name, total_rooms=total_rooms)
+
+    except Exception as e:
+        logger.error('create_room_block@Error')
+        logger.error(e)
+        return None
 
 
 def create_room():
