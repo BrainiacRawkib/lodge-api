@@ -9,17 +9,23 @@ logger = logging.getLogger(__name__)
 
 # generate
 def generate_room_code():
-    length = 10
-    while True:
-        code = ''.join(random.choices(string.ascii_letters, k=length))
-        if Room.objects.filter(code=code).exists():
-            # if True, generate another code
-            generate_room_code()
+    try:
+        length = 10
+        while True:
+            code = ''.join(random.choices(string.ascii_letters, k=length))
+            if Room.objects.filter(code=code).exists():
+                # if True, generate another code
+                generate_room_code()
 
-        else:
-            # if False, stop.
-            break
-    return f'ROOM_{code}'
+            else:
+                # if False, stop.
+                break
+        return f'ROOM_{code}'
+
+    except Exception as e:
+        logger.error('generate_room_code@Error')
+        logger.error(e)
+        return None
 
 
 # create
