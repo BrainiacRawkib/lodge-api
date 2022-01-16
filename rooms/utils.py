@@ -7,7 +7,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-# generate
+# GENERATE ROOM CODE
 def generate_room_code():
     try:
         length = 10
