@@ -37,7 +37,16 @@ class RoomSerializer(serializers.ModelSerializer):
         read_only_fields = ['code']
 
     def create(self, validated_data):
-        pass
+        try:
+            create_room(
+                validated_data['room_block'],
+                validated_data['room_no']
+            )
+
+        except Exception as err:
+            logger.error('RoomSerializer.create@Error')
+            logger.error(err)
+            return None, str(err)
 
     def update(self, instance, validated_data):
         pass
