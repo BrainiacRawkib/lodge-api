@@ -1,10 +1,9 @@
 from django.db import models
-from django.core.validators import MinValueValidator, MaxValueValidator
 
 
 class Block(models.Model):
     name = models.CharField(max_length=5)
-    total_rooms = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(100)])
+    total_rooms = models.PositiveIntegerField()
 
     def __str__(self):
         return self.name
