@@ -10,4 +10,5 @@ urlpatterns = [
     # Room urls
     path('rooms/', views.RoomAPI.as_view()),
     path('create-room/', views.RoomAPI.as_view()),
+    path('delete-room/<str:code>/', views.RoomAPI.as_view()),
 ]
