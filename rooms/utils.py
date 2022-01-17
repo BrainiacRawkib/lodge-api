@@ -33,6 +33,8 @@ def generate_room_code():
 def create_room_block(name, total_rooms):
     """Create Block (Block A, Block B, e.t.c) for Rooms."""
     try:
+        if Block.objects.filter(name=name).exists():
+            return 'exist'
         return Block.objects.create(name=name, total_rooms=total_rooms)
 
     except Exception as e:
