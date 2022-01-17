@@ -53,8 +53,9 @@ class BlockAPI(APIView):
 
 
 class RoomAPI(APIView):
+    lookup_url_kwarg = 'code'
 
-    def get(self, request, id=None, format=None):
+    def get(self, request, format=None):
         rooms = get_all_rooms()
         serializer = RoomSerializer(rooms, many=True)
         return http_response(
@@ -83,5 +84,16 @@ class RoomAPI(APIView):
     def put(self, request, id=None, format=None):
         pass
 
-    def delete(self, request, id=None, format=None):
-        pass
+    def delete(self, request, format=None):
+        room = get_room(self.lookup_url_kwarg)
+        room_to_delete = delete_room(room.code)
+
+        if not room_to_delete:
+            return http_response(
+                'Room not found.',
+                status=status.HTTP_404_NOT_FOUND,
+            )
+        return http_response(
+            'Room deleted.',
+            status=status.HTTP_204_NO_CONTENT,
+        )
