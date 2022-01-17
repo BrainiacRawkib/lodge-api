@@ -79,10 +79,10 @@ def get_all_rooms():
         return []
 
 
-def get_room_block(name):
+def get_room_block(block_id):
     """Get a Room Block."""
     try:
-        return Block.objects.get(name=name)
+        return Block.objects.get(id=block_id)
 
     except Exception as e:
         logger.error('get_room_block@Error')
