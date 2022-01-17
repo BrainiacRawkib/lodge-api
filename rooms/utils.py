@@ -99,3 +99,28 @@ def get_all_room_blocks():
         logger.error('get_all_room_blocks@Error')
         logger.error(e)
         return []
+
+
+# DELETE MODELS
+def delete_room_block(block_id):
+    """Delete Room Block by id."""
+    try:
+        Block.objects.get(id=block_id).delete()
+        return True
+
+    except Exception as e:
+        logger.error("delete_room_block@Error")
+        logger.error(e)
+        return None
+
+
+def delete_room(room_id):
+    """Delete Room by id."""
+    try:
+        Room.objects.get(id=room_id).delete()
+        return True
+
+    except Exception as e:
+        logger.error("delete_room@Error")
+        logger.error(e)
+        return None
