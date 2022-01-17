@@ -1,3 +1,4 @@
+from apiutils.views import http_response
 from django.shortcuts import render
 from rest_framework.response import Response
 from rest_framework import status
@@ -24,7 +25,13 @@ class BlockAPI(APIView):
 class RoomAPI(APIView):
 
     def get(self, request, id=None, format=None):
-        pass
+        rooms = get_all_rooms()
+        serializer = RoomSerializer(rooms, many=True)
+        return http_response(
+            'Rooms retrieved',
+            status=status.HTTP_200_OK,
+            data=serializer.data
+        )
 
     def post(self, request, format=None):
         pass
