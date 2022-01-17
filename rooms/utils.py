@@ -114,10 +114,10 @@ def delete_room_block(block_id):
         return None
 
 
-def delete_room(room_id):
+def delete_room(room_code):
     """Delete Room by id."""
     try:
-        Room.objects.get(id=room_id).delete()
+        Room.objects.get(code=room_code).delete()
         return True
 
     except Exception as e:
