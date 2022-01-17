@@ -66,3 +66,36 @@ def get_room(room_code):
         logger.error('get_room@Error')
         logger.error(e)
         return None
+
+
+def get_all_rooms():
+    """Get all rooms."""
+    try:
+        return Room.objects.all()
+
+    except Exception as e:
+        logger.error('get_all_rooms@Error')
+        logger.error(e)
+        return []
+
+
+def get_room_block(name):
+    """Get a Room Block."""
+    try:
+        return Block.objects.get(name=name)
+
+    except Exception as e:
+        logger.error('get_room_block@Error')
+        logger.error(e)
+        return None
+
+
+def get_all_room_blocks():
+    """Get all Room Blocks."""
+    try:
+        return Block.objects.all()
+
+    except Exception as e:
+        logger.error('get_all_room_blocks@Error')
+        logger.error(e)
+        return []
