@@ -15,10 +15,10 @@ class BlockSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         try:
-            create_room_block(
+            return create_room_block(
                 validated_data['name'],
                 validated_data['total_rooms']
-            )
+            ), ""
 
         except Exception as err:
             logger.error('BlockSerializer.create@Error')
@@ -46,10 +46,10 @@ class RoomSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         try:
-            create_room(
+            return create_room(
                 validated_data['room_block'],
                 validated_data['room_no']
-            )
+            ), ""
 
         except Exception as err:
             logger.error('RoomSerializer.create@Error')
