@@ -2,7 +2,7 @@ from django.db import models
 
 
 class Block(models.Model):
-    name = models.CharField(max_length=5)
+    name = models.CharField(max_length=5, unique=True)
     total_rooms = models.PositiveIntegerField()
 
     def __str__(self):
