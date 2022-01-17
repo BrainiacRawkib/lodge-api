@@ -9,6 +9,7 @@ logger = logging.getLogger(__name__)
 
 # GENERATE ROOM CODE
 def generate_room_code():
+    """Generate unique code for rooms."""
     try:
         length = 10
         while True:
@@ -30,6 +31,7 @@ def generate_room_code():
 
 # CREATE MODELS
 def create_room_block(name, total_rooms):
+    """Create Block (Block A, Block B, e.t.c) for Rooms."""
     try:
         return Block.objects.create(name=name, total_rooms=total_rooms)
 
@@ -40,6 +42,7 @@ def create_room_block(name, total_rooms):
 
 
 def create_room(room_block, room_no):
+    """Create Room."""
     try:
         return Room.objects.create(
             code=generate_room_code(),
@@ -55,6 +58,7 @@ def create_room(room_block, room_no):
 
 # GET MODELS
 def get_room(room_code):
+    """Get room."""
     try:
         return Room.objects.get(code=room_code)
 
