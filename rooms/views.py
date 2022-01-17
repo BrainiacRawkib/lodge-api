@@ -19,7 +19,21 @@ class BlockAPI(APIView):
         )
 
     def post(self, request, format=None):
-        pass
+        payload = request.data
+        serializer = BlockSerializer(data=payload)
+        if serializer.is_valid():
+            data = serializer.validated_data
+            created_block, _ = serializer.create(data)
+            if not created_block:
+                return http_response(
+                    'Server Error',
+                    status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                )
+            return http_response(
+                'Room Block created',
+                status=status.HTTP_201_CREATED,
+                data=data
+            )
 
     def put(self, request, id=None, format=None):
         pass
