@@ -34,7 +34,21 @@ class RoomAPI(APIView):
         )
 
     def post(self, request, format=None):
-        pass
+        payload = request.data
+        serializer = RoomSerializer(data=payload)
+        if serializer.is_valid():
+            data = serializer.validated_data
+            created_room, _ = serializer.create(data)
+            if not created_room:
+                return http_response(
+                    'Server Error',
+                    status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                )
+            return http_response(
+                'Room created',
+                status=status.HTTP_201_CREATED,
+                data=data
+            )
 
     def put(self, request, id=None, format=None):
         pass
