@@ -10,7 +10,13 @@ from .utils import *
 class BlockAPI(APIView):
 
     def get(self, request, id=None, format=None):
-        pass
+        room_blocks = get_all_room_blocks()
+        serializer = BlockSerializer(room_blocks, many=True)
+        return http_response(
+            'Room Blocks retrieved',
+            status=status.HTTP_200_OK,
+            data=serializer.data
+        )
 
     def post(self, request, format=None):
         pass
