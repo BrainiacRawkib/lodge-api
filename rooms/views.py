@@ -39,7 +39,17 @@ class BlockAPI(APIView):
         pass
 
     def delete(self, request, id=None, format=None):
-        pass
+        room_block = get_room_block(id)
+        room_block_to_delete = delete_room_block(room_block.id)
+        if not room_block_to_delete:
+            return http_response(
+                'Room Block not found.',
+                status=status.HTTP_404_NOT_FOUND,
+            )
+        return http_response(
+            'Room Block deleted.',
+            status=status.HTTP_204_NO_CONTENT,
+        )
 
 
 class RoomAPI(APIView):
