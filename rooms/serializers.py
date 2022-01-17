@@ -26,7 +26,15 @@ class BlockSerializer(serializers.ModelSerializer):
             return None, str(err)
 
     def update(self, instance, validated_data):
-        pass
+        try:
+            instance.total_rooms = validated_data.get('total_rooms', instance.total_rooms)
+            instance.save()
+            return instance, ""
+
+        except Exception as err:
+            logger.error('BlockSerializer.update@Error')
+            logger.error(err)
+            return None, str(err)
 
 
 class RoomSerializer(serializers.ModelSerializer):
@@ -49,4 +57,14 @@ class RoomSerializer(serializers.ModelSerializer):
             return None, str(err)
 
     def update(self, instance, validated_data):
-        pass
+        try:
+            instance.room_block = validated_data.get('room_block', instance.room_block)
+            instance.room_no = validated_data.get('room_no', instance.room_no)
+            instance.available = validated_data.get('available', instance.available)
+            instance.save()
+            return instance, ""
+
+        except Exception as err:
+            logger.error("RoomSerializer.update@Error")
+            logger.error(err)
+            return None, str(err)
