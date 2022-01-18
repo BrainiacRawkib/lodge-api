@@ -31,7 +31,7 @@ class BlockAPI(APIView):
                     data=data
                 )
         return http_response(
-            'Server Error',
+            'Bad Request',
             status=status.HTTP_400_BAD_REQUEST,
         )
 
@@ -77,7 +77,7 @@ class RoomAPI(APIView):
                     data=data
                 )
         return http_response(
-            'Server Error',
+            'Bad Request',
             status=status.HTTP_400_BAD_REQUEST,
         )
 
