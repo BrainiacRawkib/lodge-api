@@ -70,16 +70,16 @@ class RoomAPI(APIView):
         if serializer.is_valid():
             data = serializer.validated_data
             created_room, _ = serializer.create(data)
-            if not created_room:
+            if created_room:
                 return http_response(
-                    'Server Error',
-                    status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                    'Room created',
+                    status=status.HTTP_201_CREATED,
+                    data=data
                 )
-            return http_response(
-                'Room created',
-                status=status.HTTP_201_CREATED,
-                data=data
-            )
+        return http_response(
+            'Server Error',
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+        )
 
     def put(self, request, id=None, format=None):
         pass
