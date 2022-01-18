@@ -58,6 +58,17 @@ class RoomAPI(APIView):
     def get(self, request, format=None):
         rooms = get_all_rooms()
         serializer = RoomSerializer(rooms, many=True)
+        query_params = self.request.query_params
+        if query_params:
+            code = query_params['code']
+            if code:
+                room = get_room(code)
+                serializer = RoomSerializer(room)
+                return http_response(
+                    'Room retrieved',
+                    status=status.HTTP_200_OK,
+                    data=serializer.data
+                )
         return http_response(
             'Rooms retrieved',
             status=status.HTTP_200_OK,
