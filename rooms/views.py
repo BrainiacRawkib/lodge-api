@@ -12,6 +12,17 @@ class BlockAPI(APIView):
     def get(self, request, id=None, format=None):
         room_blocks = get_all_room_blocks()
         serializer = BlockSerializer(room_blocks, many=True)
+        query_params = self.request.query_params
+        if query_params:
+            room_block_id = query_params['id']
+            if room_block_id:
+                room_block = get_room_block(room_block_id)
+                serializer = BlockSerializer(room_block)
+                return http_response(
+                    'Room Block retrieved',
+                    status=status.HTTP_200_OK,
+                    data=serializer.data
+                )
         return http_response(
             'Room Blocks retrieved',
             status=status.HTTP_200_OK,
