@@ -78,7 +78,7 @@ class RoomAPI(APIView):
                 )
         return http_response(
             'Server Error',
-            status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            status=status.HTTP_400_BAD_REQUEST,
         )
 
     def put(self, request, id=None, format=None):
