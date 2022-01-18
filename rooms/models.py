@@ -10,7 +10,7 @@ class Block(models.Model):
 
 
 class Room(models.Model):
-    code = models.CharField(max_length=10, unique=True)
+    code = models.CharField(max_length=10, unique=True, default='', null=True)
     room_block = models.ForeignKey(Block, related_name='rooms', on_delete=models.CASCADE)
     room_no = models.CharField(max_length=10)
     available = models.BooleanField(default=True)
