@@ -112,6 +112,7 @@ class RoomAPI(APIView):
         return http_response(
             'Bad Request',
             status=status.HTTP_400_BAD_REQUEST,
+            data=payload
         )
 
     def put(self, request, id=None, format=None):
