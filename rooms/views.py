@@ -36,31 +36,41 @@ class BlockAPI(APIView):
         if serializer.is_valid():
             data = serializer.validated_data
             created_block, _ = serializer.create(data)
-            if not created_block:
+            if created_block:
                 return http_response(
                     'Room Block created',
                     status=status.HTTP_201_CREATED,
                     data=data
                 )
         return http_response(
-            'Bad Request',
+            'Bad Request or Room already exists',
             status=status.HTTP_400_BAD_REQUEST,
+            data=payload
         )
 
     def put(self, request, id=None, format=None):
         pass
 
     def delete(self, request, id=None, format=None):
-        room_block = get_room_block(id)
-        room_block_to_delete = delete_room_block(room_block.id)
-        if not room_block_to_delete:
-            return http_response(
-                'Room Block not found.',
-                status=status.HTTP_404_NOT_FOUND,
-            )
+        query_params = self.request.query_params
+        if query_params:
+            block_id = query_params.get(self.lookup_url_kwarg)
+            if block_id:
+                room_block = get_room_block(block_id)
+                if room_block:
+                    room_block_to_delete = delete_room_block(room_block.id)
+                    if room_block_to_delete:
+                        return http_response(
+                            'Room Block deleted.',
+                            status=status.HTTP_204_NO_CONTENT,
+                        )
+                return http_response(
+                    'Room Block not found or already deleted.',
+                    status=status.HTTP_404_NOT_FOUND,
+                )
         return http_response(
-            'Room Block deleted.',
-            status=status.HTTP_204_NO_CONTENT,
+            'No Room Block id passed in params.',
+            status=status.HTTP_400_BAD_REQUEST,
         )
 
 
