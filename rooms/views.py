@@ -115,12 +115,16 @@ class RoomAPI(APIView):
                 room = get_room(code)
                 room_to_delete = delete_room(room.code)
 
-                if not room_to_delete:
+                if room_to_delete:
                     return http_response(
-                        'Room not found.',
-                        status=status.HTTP_404_NOT_FOUND,
+                        'Room deleted.',
+                        status=status.HTTP_204_NO_CONTENT,
                     )
                 return http_response(
-                    'Room deleted.',
-                    status=status.HTTP_204_NO_CONTENT,
+                    'Room not found.',
+                    status=status.HTTP_404_NOT_FOUND,
                 )
+        return http_response(
+            'No room code found.',
+            status=status.HTTP_400_BAD_REQUEST
+        )
