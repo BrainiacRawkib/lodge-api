@@ -113,15 +113,16 @@ class RoomAPI(APIView):
             code = query_params.get(self.lookup_url_kwarg)
             if code:
                 room = get_room(code)
-                room_to_delete = delete_room(room.code)
+                if room:
+                    room_to_delete = delete_room(room.code)
 
-                if room_to_delete:
-                    return http_response(
-                        'Room deleted.',
-                        status=status.HTTP_204_NO_CONTENT,
-                    )
+                    if room_to_delete:
+                        return http_response(
+                            'Room deleted.',
+                            status=status.HTTP_204_NO_CONTENT,
+                        )
                 return http_response(
-                    'Room not found.',
+                    'Room not found or already deleted.',
                     status=status.HTTP_404_NOT_FOUND,
                 )
         return http_response(
