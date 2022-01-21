@@ -8,10 +8,11 @@ logger = logging.getLogger(__name__)
 
 
 class BlockSerializer(serializers.ModelSerializer):
+    rooms = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
 
     class Meta:
         model = Block
-        fields = '__all__'
+        fields = ['name', 'total_rooms', 'rooms']
 
     def create(self, validated_data):
         try:
@@ -42,12 +43,13 @@ class RoomSerializer(serializers.ModelSerializer):
     class Meta:
         model = Room
         fields = '__all__'
-        read_only_fields = ['code']
+        depth = 1
+        read_only_fields = ['code', 'room_block']
 
     def create(self, validated_data):
         try:
             return create_room(
-                validated_data['room_block'],
+                validated_data['room_block_name'],
                 validated_data['room_no']
             ), ""
 
