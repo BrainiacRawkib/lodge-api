@@ -46,11 +46,16 @@ def create_room_block(name, total_rooms):
 def create_room(room_block, room_no):
     """Create Room."""
     try:
-        return Room.objects.create(
+        # if Room.objects.filter(room_block=room_block, room_no=room_no).exists():
+        #     return None
+        room = Room.objects.create(
             code=generate_room_code(),
             room_block=room_block,
             room_no=room_no,
         )
+        if room:
+            return True
+        return False
 
     except Exception as e:
         logger.error('create_room@Error')
