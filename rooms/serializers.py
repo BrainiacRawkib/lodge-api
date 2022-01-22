@@ -49,7 +49,7 @@ class RoomSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         try:
             return create_room(
-                validated_data['room_block_name'],
+                validated_data['room_block'],
                 validated_data['room_no']
             ), ""
 
