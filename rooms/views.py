@@ -99,20 +99,30 @@ class RoomAPI(APIView):
 
     def post(self, request, format=None):
         payload = request.data
+        print(payload)
         serializer = RoomSerializer(data=payload)
         if serializer.is_valid():
             data = serializer.validated_data
+            print(data)
+            print(serializer)
+            print('serializer.validated_data -->', serializer.validated_data)
+            print('serializer.is_valid() -->', serializer.is_valid())
+            print('serializer.errors -->', serializer.errors)
+            print('serializer.context -->', serializer.context)
+            # print('serializer.data -->', serializer.data)
             created_room, _ = serializer.create(data)
+            # serializer.create(data)
+            serializer.save()
             if created_room:
                 return http_response(
                     'Room created',
                     status=status.HTTP_201_CREATED,
-                    data=data
+                    data=serializer.data
                 )
         return http_response(
             'Bad Request',
             status=status.HTTP_400_BAD_REQUEST,
-            data=payload
+            data=serializer.errors
         )
 
     def put(self, request, id=None, format=None):
