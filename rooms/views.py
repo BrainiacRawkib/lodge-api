@@ -112,7 +112,7 @@ class RoomAPI(APIView):
             # print('serializer.data -->', serializer.data)
             created_room, _ = serializer.create(data)
             # serializer.create(data)
-            serializer.save()
+            # serializer.save()
             if created_room:
                 return http_response(
                     'Room created',
