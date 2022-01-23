@@ -58,7 +58,7 @@ def create_room(**kwargs):
             room_block=kwargs['room_block'],
             room_no=kwargs['room_no'],
         )
-        return room.pk
+        return room
 
     except Exception as e:
         logger.error('create_room@Error')

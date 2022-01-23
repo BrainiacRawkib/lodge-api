@@ -48,9 +48,10 @@ class RoomSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         try:
-            room = create_room(
-                    **validated_data
-            )
+            # room = create_room(
+            #         **validated_data
+            # )
+            room = Room.objects.create(**validated_data)
             return room, ""
 
         except Exception as err:
