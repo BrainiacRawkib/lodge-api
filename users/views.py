@@ -8,7 +8,7 @@ from .utils import *
 class UserAPI(APIView):
     def get(self, request, *args, **kwargs):
         users = get_all_users()
-        serializer = UserSerializer(data=users)
+        serializer = UserSerializer(users, many=True)
         return http_response(
             'User Retrieved',
             status=status.HTTP_200_OK,
