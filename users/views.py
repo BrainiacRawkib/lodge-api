@@ -16,7 +16,27 @@ class UserAPI(APIView):
         )
 
     def post(self, request, *args, **kwargs):
-        pass
+        payload = request.data
+        serializer = UserSerializer(data=payload)
+        if serializer.is_valid():
+            data = serializer.validated_data
+            created_user, _ = serializer.create(data)
+            if created_user:
+                return http_response(
+                    'User created',
+                    status=status.HTTP_201_CREATED,
+                    data=serializer.data
+                )
+            return http_response(
+                'Server Error',
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                data=serializer.data
+            )
+        return http_response(
+            'User created',
+            status=status.HTTP_400_BAD_REQUEST,
+            data=serializer.data
+        )
 
     def put(self, request, *args, **kwargs):
         pass
