@@ -2,12 +2,13 @@ from apiutils.views import http_response
 from rest_framework.views import APIView
 from rest_framework import status
 from .serializers import UserSerializer
+from .utils import *
 
 
 class UserAPI(APIView):
     def get(self, request, *args, **kwargs):
-        user = request.user
-        serializer = UserSerializer(data=user)
+        users = get_all_users()
+        serializer = UserSerializer(data=users)
         return http_response(
             'User Retrieved',
             status=status.HTTP_200_OK,
