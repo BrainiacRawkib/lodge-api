@@ -18,6 +18,17 @@ def create_user(**kwargs):
 
 
 # GET MODELS
+def get_all_users():
+    try:
+        users = User.objects.all()
+        return users
+
+    except Exception as e:
+        logger.error('get_all_users@Error')
+        logger.error(e)
+        return []
+
+
 def get_user(**kwargs):
     try:
         user = User.objects.get(kwargs)
