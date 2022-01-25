@@ -33,7 +33,7 @@ class UserAPI(APIView):
                 data=serializer.data
             )
         return http_response(
-            'User created',
+            'Bad Request',
             status=status.HTTP_400_BAD_REQUEST,
             data=serializer.data
         )
