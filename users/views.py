@@ -42,4 +42,22 @@ class UserAPI(APIView):
         pass
 
     def delete(self, request, *args, **kwargs):
-        pass
+        query_params = request.query_params
+        if query_params:
+            user = query_params['username']
+            if user:
+                user_to_delete = delete_user(user)
+
+                if user_to_delete:
+                    return http_response(
+                        'User deleted.',
+                        status=status.HTTP_204_NO_CONTENT,
+                    )
+                return http_response(
+                    'User not found or already deleted.',
+                    status=status.HTTP_404_NOT_FOUND
+                )
+        return http_response(
+            'No username param passed.',
+            status=status.HTTP_400_BAD_REQUEST
+        )
