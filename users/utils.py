@@ -44,6 +44,18 @@ def get_user(username):
         return None
 
 
+# UPDATE MODELS
+
+def update_user(instance, validated_data):
+    instance.username = validated_data['username']
+    instance.email = validated_data['email']
+    if User.objects.exclude(username=instance.username)\
+            .filter(username=instance.username, email=instance.email).exists():
+        return None
+    instance.save()
+    return instance
+
+
 # DELETE USER
 def delete_user(user):
     try:
