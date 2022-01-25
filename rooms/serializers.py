@@ -42,16 +42,17 @@ class RoomSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Room
-        fields = '__all__'
-        depth = 1
+        fields = ['code', 'room_block', 'room_no', 'available']
+        # depth = 1
         read_only_fields = ['code', 'room_block']
 
     def create(self, validated_data):
         try:
-            return create_room(
-                validated_data['room_block_name'],
-                validated_data['room_no']
-            ), ""
+            room = create_room(
+                    **validated_data
+            )
+            # room = Room.objects.create(**validated_data)
+            return room, ""
 
         except Exception as err:
             logger.error('RoomSerializer.create@Error')

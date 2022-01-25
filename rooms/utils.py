@@ -43,19 +43,22 @@ def create_room_block(name, total_rooms):
         return None
 
 
-def create_room(room_block, room_no):
+def create_room(**kwargs):
     """Create Room."""
     try:
         # if Room.objects.filter(room_block=room_block, room_no=room_no).exists():
         #     return None
+        # room = Room.objects.create(
+        #     code=generate_room_code(),
+        #     room_block=room_block,
+        #     room_no=room_no,
+        # )
         room = Room.objects.create(
             code=generate_room_code(),
-            room_block=room_block,
-            room_no=room_no,
+            room_block=kwargs['room_block'],
+            room_no=kwargs['room_no'],
         )
-        if room:
-            return True
-        return False
+        return room
 
     except Exception as e:
         logger.error('create_room@Error')
