@@ -8,6 +8,8 @@ logger = logging.getLogger(__name__)
 # CREATE MODELS
 def create_user(**kwargs):
     try:
+        if User.objects.filter(email=kwargs['email']).exists():
+            return None
         user = User.objects.create(**kwargs)
         return user
 
