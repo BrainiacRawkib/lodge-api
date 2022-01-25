@@ -38,3 +38,16 @@ def get_user(**kwargs):
         logger.error('get_user@Error')
         logger.error(e)
         return None
+
+
+# DELETE USER
+def delete_user(user):
+    try:
+        user = get_user(username=user)
+        user.delete()
+        return True
+
+    except Exception as e:
+        logger.error('delete_user@Error')
+        logger.error(e)
+        return False
