@@ -29,9 +29,9 @@ def get_all_users():
         return []
 
 
-def get_user(**kwargs):
+def get_user(username):
     try:
-        user = User.objects.get(kwargs)
+        user = User.objects.get(username=username)
         return user
 
     except Exception as e:
