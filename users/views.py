@@ -9,8 +9,19 @@ class UserAPI(APIView):
     def get(self, request, *args, **kwargs):
         users = get_all_users()
         serializer = UserSerializer(users, many=True)
+        query_params = request.query_params
+        if query_params:
+            username = query_params['username']
+            if username:
+                user = get_user(username)
+                serializer = UserSerializer(user)
+                return http_response(
+                    'User Retrieved',
+                    status=status.HTTP_200_OK,
+                    data=serializer.data
+                )
         return http_response(
-            'User Retrieved',
+            'Users Retrieved',
             status=status.HTTP_200_OK,
             data=serializer.data
         )
