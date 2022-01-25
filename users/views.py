@@ -14,11 +14,16 @@ class UserAPI(APIView):
             username = query_params['username']
             if username:
                 user = get_user(username)
-                serializer = UserSerializer(user)
+                if user:
+                    serializer = UserSerializer(user)
+                    return http_response(
+                        'User Retrieved',
+                        status=status.HTTP_200_OK,
+                        data=serializer.data
+                    )
                 return http_response(
-                    'User Retrieved',
-                    status=status.HTTP_200_OK,
-                    data=serializer.data
+                    'User not found',
+                    status=status.HTTP_404_NOT_FOUND,
                 )
         return http_response(
             'Users Retrieved',
