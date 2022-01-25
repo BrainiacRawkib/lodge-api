@@ -77,7 +77,8 @@ class UserAPI(APIView):
                     )
             return http_response(
                 'Bad Request. Specify a user to update',
-                status=status.HTTP_400_BAD_REQUEST
+                status=status.HTTP_400_BAD_REQUEST,
+                data=payload
             )
         return http_response(
             'Bad Request.',
