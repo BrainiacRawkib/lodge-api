@@ -34,6 +34,8 @@ def get_all_users():
 def get_user(username):
     try:
         user = User.objects.get(username=username)
+        if not user:
+            return None
         return user
 
     except Exception as e:
