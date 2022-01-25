@@ -25,7 +25,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         try:
-            return update_user(instance, validated_data),""
+            return update_user(instance, validated_data), ""
 
         except Exception as err:
             logger.error('UserSerializer.update@Error')
