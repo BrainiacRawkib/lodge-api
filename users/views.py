@@ -60,11 +60,10 @@ class UserAPI(APIView):
         if query_params:
             user = query_params['username']
             if user:
-                get_user_to_update = get_user(user)
                 serializer = UserSerializer(data=payload)
                 if serializer.is_valid():
                     data = serializer.validated_data
-                    user_to_update, _ = serializer.update(get_user_to_update, data)
+                    user_to_update, _ = serializer.update(user, data)
                     if user_to_update:
                         return http_response(
                             'User updated.',
@@ -77,8 +76,8 @@ class UserAPI(APIView):
                         data=serializer.errors
                     )
             return http_response(
-                'Bad Request. Specify a user to update',
-                status=status.HTTP_400_BAD_REQUEST,
+                'User does not exist.',
+                status=status.HTTP_404_NOT_FOUND,
                 data=payload
             )
         return http_response(
