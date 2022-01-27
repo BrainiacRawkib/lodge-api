@@ -25,7 +25,14 @@ class UserSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         try:
-            return update_user(instance, validated_data), ""
+            # return update_user(instance, validated_data), ""
+            instance.username = validated_data.get('username', instance.username)
+            instance.email = validated_data.get('email', instance.email)
+            # if User.objects.exclude(username=instance.username) \
+            #         .filter(username=instance.username, email=instance.email).exists():
+            #     return None
+            instance.save()
+            return instance, ""
 
         except Exception as err:
             logger.error('UserSerializer.update@Error')

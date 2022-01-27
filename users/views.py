@@ -64,6 +64,11 @@ class UserAPI(APIView):
                 if serializer.is_valid():
                     data = serializer.validated_data
                     user_to_update, _ = serializer.update(user, data)
+                    print(serializer.data)
+                    print(serializer.validated_data)
+                    print(user_to_update)
+                    print(serializer.errors)
+                    print(serializer.error_messages)
                     if user_to_update:
                         return http_response(
                             'User updated.',

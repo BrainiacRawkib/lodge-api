@@ -47,8 +47,8 @@ def get_user(username):
 # UPDATE MODELS
 
 def update_user(instance, validated_data):
-    instance.username = validated_data['username']
-    instance.email = validated_data['email']
+    instance.username = validated_data.get('username', instance.username)
+    instance.email = validated_data.get('email', instance.email)
     if User.objects.exclude(username=instance.username)\
             .filter(username=instance.username, email=instance.email).exists():
         return None
