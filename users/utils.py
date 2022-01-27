@@ -47,14 +47,20 @@ def get_user(username):
 # UPDATE MODELS
 
 def update_user(instance, validated_data):
-    ins = get_user(instance)
-    ins.username = validated_data.get('username', ins.username)
-    ins.email = validated_data.get('email', ins.email)
-    if User.objects.exclude(username=ins.username)\
-            .filter(username=ins.username, email=ins.email).exists():
+    try:
+        ins = get_user(instance)
+        ins.username = validated_data.get('username', ins.username)
+        ins.email = validated_data.get('email', ins.email)
+        if User.objects.exclude(username=ins.username)\
+                .filter(username=ins.username, email=ins.email).exists():
+            return None
+        ins.save()
+        return ins
+
+    except Exception as e:
+        logger.error('update_user@Error')
+        logger.error(e)
         return None
-    ins.save()
-    return ins
 
 
 # DELETE USER
