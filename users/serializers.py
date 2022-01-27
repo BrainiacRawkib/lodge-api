@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from .utils import create_user, update_user
+from .utils import create_user, update_user, get_user
 
 import logging
 
@@ -25,14 +25,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         try:
-            # return update_user(instance, validated_data), ""
-            instance.username = validated_data.get('username', instance.username)
-            instance.email = validated_data.get('email', instance.email)
-            # if User.objects.exclude(username=instance.username) \
-            #         .filter(username=instance.username, email=instance.email).exists():
-            #     return None
-            instance.save()
-            return instance, ""
+            return update_user(instance, validated_data), ""
 
         except Exception as err:
             logger.error('UserSerializer.update@Error')

@@ -60,15 +60,11 @@ class UserAPI(APIView):
         if query_params:
             user = query_params['username']
             if user:
+                get_user_to_update = get_user(user)
                 serializer = UserSerializer(data=payload)
                 if serializer.is_valid():
                     data = serializer.validated_data
-                    user_to_update, _ = serializer.update(user, data)
-                    print(serializer.data)
-                    print(serializer.validated_data)
-                    print(user_to_update)
-                    print(serializer.errors)
-                    print(serializer.error_messages)
+                    user_to_update, _ = serializer.update(get_user_to_update, data)
                     if user_to_update:
                         return http_response(
                             'User updated.',
