@@ -99,7 +99,6 @@ class RoomAPI(APIView):
 
     def post(self, request, format=None):
         payload = request.data
-        print('payload -->', payload)
         serializer = RoomSerializer(data=payload)
         if serializer.is_valid():
             data = serializer.validated_data
