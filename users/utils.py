@@ -51,7 +51,7 @@ def update_user(instance, validated_data):
         ins = get_user(instance)
         ins.username = validated_data.get('username', ins.username)
         ins.email = validated_data.get('email', ins.email)
-        if User.objects.exclude(username=ins.username)\
+        if User.objects.exclude(username=ins.username, email=ins.email)\
                 .filter(username=ins.username, email=ins.email).exists():
             return None
         ins.save()
