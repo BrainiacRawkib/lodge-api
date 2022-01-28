@@ -43,20 +43,15 @@ def create_room_block(name, total_rooms):
         return None
 
 
-def create_room(**kwargs):
+def create_room(room_block, room_no):
     """Create Room."""
     try:
-        # if Room.objects.filter(room_block=room_block, room_no=room_no).exists():
-        #     return None
-        # room = Room.objects.create(
-        #     code=generate_room_code(),
-        #     room_block=room_block,
-        #     room_no=room_no,
-        # )
+        if Room.objects.filter(room_block=room_block, room_no=room_no).exists():
+            return None
         room = Room.objects.create(
             code=generate_room_code(),
-            room_block=kwargs['room_block'],
-            room_no=kwargs['room_no'],
+            room_block=room_block,
+            room_no=room_no,
         )
         return room
 
@@ -92,7 +87,10 @@ def get_all_rooms():
 def get_room_block(block_id):
     """Get a Room Block."""
     try:
-        return Block.objects.get(id=block_id)
+        room_block = Block.objects.get(id=block_id)
+        if room_block is not None:
+            return room_block
+        return None
 
     except Exception as e:
         logger.error('get_room_block@Error')

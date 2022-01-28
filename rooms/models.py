@@ -12,6 +12,7 @@ class Block(models.Model):
 class Room(models.Model):
     code = models.CharField(max_length=10, unique=True)
     room_block = models.ForeignKey(Block, related_name='rooms', on_delete=models.CASCADE)
+    users = models.ManyToManyField('auth.User', related_name='room_occupants')
     room_no = models.CharField(max_length=10)
     available = models.BooleanField(default=True)
 

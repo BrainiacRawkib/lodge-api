@@ -55,7 +55,35 @@ class UserAPI(APIView):
         )
 
     def put(self, request, *args, **kwargs):
-        pass
+        query_params = request.query_params
+        payload = request.data
+        if query_params:
+            user = query_params['username']
+            if user:
+                serializer = UserSerializer(data=payload)
+                if serializer.is_valid():
+                    data = serializer.validated_data
+                    user_to_update, _ = serializer.update(user, data)
+                    if user_to_update:
+                        return http_response(
+                            'User updated.',
+                            status=status.HTTP_200_OK,
+                            data=serializer.data
+                        )
+                    return http_response(
+                        'Server Error',
+                        status.HTTP_500_INTERNAL_SERVER_ERROR,
+                        data=serializer.errors
+                    )
+            return http_response(
+                'User does not exist.',
+                status=status.HTTP_404_NOT_FOUND,
+                data=payload
+            )
+        return http_response(
+            'Bad Request.',
+            status=status.HTTP_400_BAD_REQUEST
+        )
 
     def delete(self, request, *args, **kwargs):
         query_params = request.query_params
