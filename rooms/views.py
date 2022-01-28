@@ -103,16 +103,8 @@ class RoomAPI(APIView):
         serializer = RoomSerializer(data=payload)
         if serializer.is_valid():
             data = serializer.validated_data
-            print('data -->', data)
-            print('serializer -->', serializer)
-            print('serializer.validated_data -->', serializer.validated_data)
-            print('serializer.is_valid() -->', serializer.is_valid())
-            print('serializer.errors -->', serializer.errors)
-            print('serializer.context -->', serializer.context)
-            # print('serializer.data -->', serializer.data)
+            data['room_block'] = get_room_block(payload['room_block'])
             created_room, _ = serializer.create(data)
-            # serializer.create(data)
-            # serializer.save()
             if created_room:
                 return http_response(
                     'Room created',
