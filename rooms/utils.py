@@ -1,5 +1,6 @@
 import string
 import random
+from users.utils import *
 from .models import Block, Room
 
 import logging
@@ -132,3 +133,42 @@ def delete_room(room_code):
         logger.error("delete_room@Error")
         logger.error(e)
         return None
+
+
+# UPDATE MODELS
+def update_room_with_a_user(user, room_code):
+    try:
+        room = get_room(room_code)
+        room.users.add(user)
+        return room
+
+    except Exception as e:
+        logger.error('update_room_with_a_user@Error')
+        logger.error(e)
+        return None
+
+
+# USER-ROOM OPERATIONS
+def join_user_to_room(user, room_code):
+    try:
+        if check_user_room_uniqueness(user):
+            return update_room_with_a_user(user, room_code)
+        return None
+
+    except Exception as e:
+        logger.error('join_user_to_room@Error')
+        logger.error(e)
+        return None
+
+
+def check_user_room_uniqueness(user):
+    try:
+        user = get_user(user)
+        if user.room_occupants.count() == 0:
+            return True
+        return False
+
+    except Exception as e:
+        logger.error('check_user_room_uniqueness@Error')
+        logger.error(e)
+        return False
