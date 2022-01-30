@@ -70,6 +70,7 @@ def get_room(room_code):
 
     except Exception as e:
         logger.error('get_room@Error')
+        print(room_code)
         logger.error(e)
         return None
 
@@ -139,8 +140,8 @@ def delete_room(room_code):
 def update_room_with_a_user(user, room_code):
     try:
         room = get_room(room_code)
-        # room.users.add(user)
-        room.users = user
+        room.users.add(user)
+        # room.users = user
         return room
 
     except Exception as e:

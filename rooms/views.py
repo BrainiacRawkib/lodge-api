@@ -118,20 +118,21 @@ class RoomAPI(APIView):
 
     def put(self, request, id=None, format=None):
         query_params = request.query_params
-        user = request.user
         payload = request.data
+        user = payload['user']
         if query_params:
-            print(query_params)
             room_code = query_params.get(self.lookup_url_kwarg)
-            print(room_code)
             room = get_room(room_code)
-            print(room)
             if room:
                 serializer = RoomSerializer(data=payload)
-                # room = get_room(room_code)
+                room_block = get_room_block(payload['room_block'])
+                print(serializer)
                 if serializer.is_valid():
                     data = serializer.validated_data
-                    room_to_update, _ = serializer.update(room_code, data, user)
+                    print(serializer.data)
+                    print(user)
+                    data['room_block'] = room_block
+                    room_to_update, _ = serializer.update(room, data, user)
                     if room_to_update:
                         return http_response(
                             'User added to room.',

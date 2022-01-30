@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from .models import Block, Room
-from .utils import create_room_block, create_room, join_user_to_room
+from .utils import create_room_block, create_room, join_user_to_room, update_room_with_a_user
 
 import logging
 
@@ -63,8 +63,11 @@ class RoomSerializer(serializers.ModelSerializer):
             instance.room_code = validated_data.get('room_code')
             instance.room_no = validated_data.get('room_no', instance.room_no)
             instance.available = validated_data.get('available', instance.available)
-            instance.save()
             user = join_user_to_room(user, instance.room_code)
+            print('serializer ->', instance.room_block, instance.room_no, instance.room_code, instance.available, instance.users)
+            print(user)
+            print('instance.room_code ->', validated_data.get('instance.room_code', None))
+            instance.save()
             return user, ""
 
         except Exception as err:
