@@ -139,7 +139,8 @@ def delete_room(room_code):
 def update_room_with_a_user(user, room_code):
     try:
         room = get_room(room_code)
-        room.users.add(user)
+        # room.users.add(user)
+        room.users = user
         return room
 
     except Exception as e:
