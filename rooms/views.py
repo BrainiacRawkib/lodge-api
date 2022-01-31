@@ -117,7 +117,43 @@ class RoomAPI(APIView):
         )
 
     def put(self, request, id=None, format=None):
-        pass
+        query_params = request.query_params
+        payload = request.data
+        user = payload['user']
+        if query_params:
+            room_code = query_params.get(self.lookup_url_kwarg)
+            room = get_room(room_code)
+            if room:
+                serializer = RoomSerializer(data=payload)
+                room_block = get_room_block(payload['room_block'])
+                print(serializer)
+                if serializer.is_valid():
+                    data = serializer.validated_data
+                    print(serializer.data)
+                    print(user)
+                    data['room_block'] = room_block
+                    room_to_update, _ = serializer.update(room, data, user)
+                    if room_to_update:
+                        return http_response(
+                            'User added to room.',
+                            status=status.HTTP_200_OK,
+                            data=serializer.data
+                        )
+                    return http_response(
+                        'Error adding user to room.',
+                        status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                        data=serializer.errors
+                    )
+            return http_response(
+                'Room not found',
+                status=status.HTTP_404_NOT_FOUND,
+                data=payload
+            )
+        return http_response(
+            'No params given for lookup',
+            status=status.HTTP_400_BAD_REQUEST,
+            data=payload
+        )
 
     def delete(self, request, format=None):
         query_params = self.request.query_params
