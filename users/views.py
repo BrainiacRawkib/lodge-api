@@ -1,7 +1,7 @@
 from apiutils.views import http_response
 from rest_framework.views import APIView
 from rest_framework import status
-from .serializers import UserSerializer
+from .serializers import UserSerializer, LoginSerializer
 from .utils import *
 
 
@@ -104,4 +104,21 @@ class UserAPI(APIView):
         return http_response(
             'No username param passed.',
             status=status.HTTP_400_BAD_REQUEST
+        )
+
+
+class LoginAPI(APIView):
+    def post(self, request, *args, **kwargs):
+        payload = request.data
+        serializer = LoginSerializer(data=payload)
+        if serializer.is_valid():
+            return http_response(
+                'Login Successful.',
+                status=status.HTTP_200_OK,
+                data=serializer.data
+            )
+        return http_response(
+            'Invalid Credentials',
+            status=status.HTTP_400_BAD_REQUEST,
+            data=serializer.errors
         )
