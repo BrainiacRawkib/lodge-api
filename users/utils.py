@@ -10,7 +10,7 @@ def create_user(**kwargs):
     try:
         if User.objects.filter(email=kwargs['email']).exists():
             return None
-        user = User.objects.create(**kwargs)
+        user = User.objects.create_user(**kwargs)
         return user
 
     except Exception as e:
@@ -51,6 +51,7 @@ def update_user(instance, validated_data):
         ins = get_user(instance)
         ins.username = validated_data.get('username', ins.username)
         ins.email = validated_data.get('email', ins.email)
+        ins.password = validated_data.get('password', ins.password)
         if User.objects.exclude(username=ins.username, email=ins.email)\
                 .filter(username=ins.username, email=ins.email).exists():
             return None

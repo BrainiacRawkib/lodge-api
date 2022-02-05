@@ -115,6 +115,7 @@ class LoginAPI(APIView):
         serializer = LoginSerializer(data=payload)
         print(serializer)
         print(serializer.is_valid())
+        print(serializer.errors)
         if serializer.is_valid():
             data = serializer.validated_data
             print('data ->', data)
@@ -124,7 +125,6 @@ class LoginAPI(APIView):
                 data=serializer.data
             )
         print(serializer.data)
-        print(serializer.errors)
         return http_response(
             'Invalid Credentials',
             status=status.HTTP_400_BAD_REQUEST,
