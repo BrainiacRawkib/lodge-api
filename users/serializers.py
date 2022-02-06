@@ -17,11 +17,6 @@ class UserSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         try:
-            # user = create_user(
-            #     username=validated_data['username'],
-            #     email=validated_data['email'],
-            #     password=validated_data['password']
-            # )
             user = create_user(**validated_data)
             return user, ""
 
@@ -38,22 +33,6 @@ class UserSerializer(serializers.ModelSerializer):
             logger.error('UserSerializer.update@Error')
             logger.error(err)
             return None, str(err)
-
-
-# class UserSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = User
-#         fields = ['email', 'username', 'password']
-#         extra_kwargs = {'password': {'write_only': True}}
-#
-#     def create(self, validated_data):
-#         user = User(
-#             email=validated_data['email'],
-#             username=validated_data['username']
-#         )
-#         user.set_password(validated_data['password'])
-#         user.save()
-#         return user
 
 
 class LoginSerializer(serializers.Serializer):

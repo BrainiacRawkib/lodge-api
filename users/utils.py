@@ -11,9 +11,6 @@ def create_user(**kwargs):
     try:
         if User.objects.filter(email=kwargs['email']).exists():
             return None
-        # if User.objects.filter(email=email).exists():
-        #     return None
-        # user = User.objects.create_user(username=username, email=email, password=password)
         user = User.objects.create_user(**kwargs)
         token, created = Token.objects.get_or_create(user=user)
         return user, token
