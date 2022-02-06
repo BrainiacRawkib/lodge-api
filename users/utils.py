@@ -1,4 +1,5 @@
 from django.contrib.auth.models import User
+from rest_framework.authtoken.models import Token
 
 import logging
 
@@ -10,8 +11,12 @@ def create_user(**kwargs):
     try:
         if User.objects.filter(email=kwargs['email']).exists():
             return None
+        # if User.objects.filter(email=email).exists():
+        #     return None
+        # user = User.objects.create_user(username=username, email=email, password=password)
         user = User.objects.create_user(**kwargs)
-        return user
+        token, created = Token.objects.get_or_create(user=user)
+        return user, token
 
     except Exception as e:
         logger.error('create_user@Error')

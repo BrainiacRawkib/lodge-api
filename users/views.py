@@ -113,18 +113,13 @@ class LoginAPI(APIView):
     def post(self, request, *args, **kwargs):
         payload = request.data
         serializer = LoginSerializer(data=payload)
-        print(serializer)
-        print(serializer.is_valid())
-        print(serializer.errors)
         if serializer.is_valid():
             data = serializer.validated_data
-            print('data ->', data)
             return http_response(
                 'Login Successful.',
                 status=status.HTTP_200_OK,
                 data=serializer.data
             )
-        print(serializer.data)
         return http_response(
             'Invalid Credentials',
             status=status.HTTP_400_BAD_REQUEST,
