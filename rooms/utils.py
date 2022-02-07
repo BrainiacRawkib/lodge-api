@@ -44,7 +44,7 @@ def create_room_block(name, total_rooms):
         return None
 
 
-def create_room(room_block, room_no):
+def create_room(room_block, room_no, total_occupants):
     """Create Room."""
     try:
         if Room.objects.filter(room_block=room_block, room_no=room_no).exists():
@@ -53,6 +53,7 @@ def create_room(room_block, room_no):
             code=generate_room_code(),
             room_block=room_block,
             room_no=room_no,
+            total_occupants=total_occupants
         )
         return room
 
@@ -137,32 +138,28 @@ def delete_room(room_code):
 
 
 # UPDATE MODELS
-def update_room_with_a_user(user, room_code):
+def update_room(instance, user, validated_data):
     try:
-        room = get_room(room_code)
-        room.users.add(user)
-        # room.users = user
+        room = get_room(instance.code)
+        if room.users.count() == room.total_occupants:
+            room.available = False
+        if room.available:
+            if check_user_room_uniqueness(user):
+                room.users.add(user)
+            else:
+                return None
+        if not room.available:
+            return None
+        room.save()
         return room
 
     except Exception as e:
-        logger.error('update_room_with_a_user@Error')
+        logger.error('update_room@Error')
         logger.error(e)
         return None
 
 
 # USER-ROOM OPERATIONS
-def join_user_to_room(user, room_code):
-    try:
-        if check_user_room_uniqueness(user):
-            return update_room_with_a_user(user, room_code)
-        return None
-
-    except Exception as e:
-        logger.error('join_user_to_room@Error')
-        logger.error(e)
-        return None
-
-
 def check_user_room_uniqueness(user):
     try:
         user = get_user(user)

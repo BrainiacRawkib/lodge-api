@@ -1,6 +1,4 @@
 from apiutils.views import http_response
-from django.shortcuts import render
-from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
 from .serializers import BlockSerializer, RoomSerializer
@@ -110,28 +108,36 @@ class RoomAPI(APIView):
                     status=status.HTTP_201_CREATED,
                     data=serializer.data
                 )
+            return http_response(
+                'Room number already exist in the room block',
+                status=status.HTTP_208_ALREADY_REPORTED,
+                data=serializer.data
+            )
         return http_response(
             'Bad Request',
             status=status.HTTP_400_BAD_REQUEST,
             data=serializer.errors
         )
 
-    def put(self, request, id=None, format=None):
+    def put(self, request, format=None):
         query_params = request.query_params
         payload = request.data
-        user = payload['user']
+        user = get_user(request.user)
         if query_params:
             room_code = query_params.get(self.lookup_url_kwarg)
             room = get_room(room_code)
+            payload['room_no'] = room.room_no
+            payload['total_occupants'] = room.total_occupants
             if room:
                 serializer = RoomSerializer(data=payload)
-                room_block = get_room_block(payload['room_block'])
-                print(serializer)
                 if serializer.is_valid():
                     data = serializer.validated_data
-                    print(serializer.data)
-                    print(user)
-                    data['room_block'] = room_block
+                    if not room.available:
+                        return http_response(
+                            'Cannot add user to room. Room is full',
+                            status=status.HTTP_204_NO_CONTENT,
+                            data=serializer.data
+                        )
                     room_to_update, _ = serializer.update(room, data, user)
                     if room_to_update:
                         return http_response(
