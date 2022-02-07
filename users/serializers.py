@@ -1,6 +1,7 @@
 from rest_framework import serializers
+from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
-from .utils import create_user, update_user, get_user
+from .utils import create_user, update_user
 
 import logging
 
@@ -11,7 +12,8 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['id', 'username', 'email']
+        fields = ['id', 'username', 'email', 'password']
+        extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
         try:
@@ -31,3 +33,14 @@ class UserSerializer(serializers.ModelSerializer):
             logger.error('UserSerializer.update@Error')
             logger.error(err)
             return None, str(err)
+
+
+class LoginSerializer(serializers.Serializer):
+    username = serializers.CharField()
+    password = serializers.CharField()
+
+    def validate(self, attrs):
+        user = authenticate(**attrs)
+        if user and user.is_active:
+            return user
+        raise serializers.ValidationError('Invalid Credentials.')

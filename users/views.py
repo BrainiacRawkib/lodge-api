@@ -1,7 +1,8 @@
 from apiutils.views import http_response
 from rest_framework.views import APIView
+from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework import status
-from .serializers import UserSerializer
+from .serializers import UserSerializer, LoginSerializer
 from .utils import *
 
 
@@ -104,4 +105,43 @@ class UserAPI(APIView):
         return http_response(
             'No username param passed.',
             status=status.HTTP_400_BAD_REQUEST
+        )
+
+
+class LoginAPI(APIView):
+    def post(self, request, *args, **kwargs):
+        payload = request.data
+        serializer = LoginSerializer(data=payload)
+        if serializer.is_valid():
+            data = serializer.validated_data
+            return http_response(
+                'Login Successful.',
+                status=status.HTTP_200_OK,
+                data=serializer.data
+            )
+        return http_response(
+            'Invalid Credentials',
+            status=status.HTTP_400_BAD_REQUEST,
+            data=serializer.errors
+        )
+
+
+class CustomAuthToken(ObtainAuthToken):
+
+    def post(self, request, *args, **kwargs):
+        payload = request.data
+        context = {'request': request}
+        serializer = self.serializer_class(data=payload, context=context)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.validated_data['user']
+        token, created = Token.objects.get_or_create(user=user)
+        data = {
+            'token': token.key,
+            'user_id': user.pk,
+            'email': user.email
+        }
+        return http_response(
+            'Login Successful',
+            status=status.HTTP_200_OK,
+            data=data
         )
