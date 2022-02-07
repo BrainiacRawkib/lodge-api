@@ -42,9 +42,9 @@ class RoomSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Room
-        fields = ['id', 'code', 'room_block', 'room_no', 'available']
+        fields = ['id', 'code', 'room_block', 'room_no', 'available', 'users']
         depth = 1
-        read_only_fields = ['code', 'room_block']
+        read_only_fields = ['code', 'room_block', 'users']
 
     def create(self, validated_data):
         try:
@@ -59,16 +59,14 @@ class RoomSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data, user):
         try:
-            instance.room_block = validated_data.get('room_block', instance.room_block)
-            instance.room_code = validated_data.get('room_code')
-            instance.room_no = validated_data.get('room_no', instance.room_no)
             instance.available = validated_data.get('available', instance.available)
-            user = join_user_to_room(user, instance.room_code)
-            print('serializer ->', instance.room_block, instance.room_no, instance.room_code, instance.available, instance.users)
-            print(user)
-            print('instance.room_code ->', validated_data.get('instance.room_code', None))
+            # user = join_user_to_room(user, instance.code)
+            # instance.users = validated_data.get('users', user)
+            instance.users.add(user)
             instance.save()
-            return user, ""
+            print('serializer ->', instance.room_block, instance.room_no, instance.code, instance.available,
+                  instance.users)
+            return instance, ""
 
         except Exception as err:
             logger.error("RoomSerializer.update@Error")

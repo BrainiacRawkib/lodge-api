@@ -1,6 +1,4 @@
 from apiutils.views import http_response
-from django.shortcuts import render
-from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
 from .serializers import BlockSerializer, RoomSerializer
@@ -116,22 +114,24 @@ class RoomAPI(APIView):
             data=serializer.errors
         )
 
-    def put(self, request, id=None, format=None):
+    def put(self, request, format=None):
         query_params = request.query_params
         payload = request.data
-        user = payload['user']
+        # user = get_user(payload['users'])
+        user = get_user(request.user)
+        print('user -->', user)
+        print('request.user -->', request.user)
         if query_params:
             room_code = query_params.get(self.lookup_url_kwarg)
             room = get_room(room_code)
+            payload['room_no'] = room.room_no
             if room:
                 serializer = RoomSerializer(data=payload)
-                room_block = get_room_block(payload['room_block'])
-                print(serializer)
+                room_block = room.room_block
                 if serializer.is_valid():
                     data = serializer.validated_data
-                    print(serializer.data)
-                    print(user)
-                    data['room_block'] = room_block
+                    # data['room_block'] = room_block
+                    print(data)
                     room_to_update, _ = serializer.update(room, data, user)
                     if room_to_update:
                         return http_response(
