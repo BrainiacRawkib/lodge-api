@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from .models import Block, Room
-from .utils import create_room_block, create_room, join_user_to_room, update_room_with_a_user
+from .utils import create_room_block, create_room, update_room
 
 import logging
 
@@ -42,14 +42,15 @@ class RoomSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Room
-        fields = ['id', 'code', 'room_block', 'room_no', 'available', 'users']
+        fields = ['id', 'code', 'room_block', 'room_no', 'available', 'users', 'total_occupants']
         depth = 1
         read_only_fields = ['code', 'room_block', 'users']
 
     def create(self, validated_data):
         try:
             return create_room(
-                validated_data['room_block'], validated_data['room_no']
+                validated_data['room_block'], validated_data['room_no'],
+                validated_data['total_occupants']
             ), ""
 
         except Exception as err:
@@ -59,14 +60,7 @@ class RoomSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data, user):
         try:
-            instance.available = validated_data.get('available', instance.available)
-            # user = join_user_to_room(user, instance.code)
-            # instance.users = validated_data.get('users', user)
-            instance.users.add(user)
-            instance.save()
-            print('serializer ->', instance.room_block, instance.room_no, instance.code, instance.available,
-                  instance.users)
-            return instance, ""
+            return update_room(instance, user, validated_data), ""
 
         except Exception as err:
             logger.error("RoomSerializer.update@Error")

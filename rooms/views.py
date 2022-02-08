@@ -108,6 +108,11 @@ class RoomAPI(APIView):
                     status=status.HTTP_201_CREATED,
                     data=serializer.data
                 )
+            return http_response(
+                'Room number already exist in the room block',
+                status=status.HTTP_208_ALREADY_REPORTED,
+                data=serializer.data
+            )
         return http_response(
             'Bad Request',
             status=status.HTTP_400_BAD_REQUEST,
@@ -117,21 +122,22 @@ class RoomAPI(APIView):
     def put(self, request, format=None):
         query_params = request.query_params
         payload = request.data
-        # user = get_user(payload['users'])
         user = get_user(request.user)
-        print('user -->', user)
-        print('request.user -->', request.user)
         if query_params:
             room_code = query_params.get(self.lookup_url_kwarg)
             room = get_room(room_code)
             payload['room_no'] = room.room_no
+            payload['total_occupants'] = room.total_occupants
             if room:
                 serializer = RoomSerializer(data=payload)
-                room_block = room.room_block
                 if serializer.is_valid():
                     data = serializer.validated_data
-                    # data['room_block'] = room_block
-                    print(data)
+                    if not room.available:
+                        return http_response(
+                            'Cannot add user to room. Room is full',
+                            status=status.HTTP_204_NO_CONTENT,
+                            data=serializer.data
+                        )
                     room_to_update, _ = serializer.update(room, data, user)
                     if room_to_update:
                         return http_response(

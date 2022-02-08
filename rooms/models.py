@@ -15,6 +15,7 @@ class Room(models.Model):
     users = models.ManyToManyField('auth.User', related_name='room_occupants')
     room_no = models.CharField(max_length=10)
     available = models.BooleanField(default=True)
+    total_occupants = models.PositiveIntegerField()
 
     def __str__(self):
         return f'{self.room_block.name} {self.room_no}'
