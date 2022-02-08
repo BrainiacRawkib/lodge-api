@@ -146,7 +146,8 @@ def update_room(instance, user, validated_data):
         if room.available:
             if check_user_room_uniqueness(user):
                 room.users.add(user)
-            return None
+            else:
+                return None
         if not room.available:
             return None
         room.save()
