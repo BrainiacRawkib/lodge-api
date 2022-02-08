@@ -1,6 +1,4 @@
 from apiutils.views import http_response
-from django.shortcuts import render
-from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
 from .serializers import BlockSerializer, RoomSerializer
@@ -110,14 +108,58 @@ class RoomAPI(APIView):
                     status=status.HTTP_201_CREATED,
                     data=serializer.data
                 )
+            return http_response(
+                'Room number already exist in the room block',
+                status=status.HTTP_208_ALREADY_REPORTED,
+                data=serializer.data
+            )
         return http_response(
             'Bad Request',
             status=status.HTTP_400_BAD_REQUEST,
             data=serializer.errors
         )
 
-    def put(self, request, id=None, format=None):
-        pass
+    def put(self, request, format=None):
+        query_params = request.query_params
+        payload = request.data
+        user = get_user(request.user)
+        if query_params:
+            room_code = query_params.get(self.lookup_url_kwarg)
+            room = get_room(room_code)
+            payload['room_no'] = room.room_no
+            payload['total_occupants'] = room.total_occupants
+            if room:
+                serializer = RoomSerializer(data=payload)
+                if serializer.is_valid():
+                    data = serializer.validated_data
+                    if not room.available:
+                        return http_response(
+                            'Cannot add user to room. Room is full',
+                            status=status.HTTP_204_NO_CONTENT,
+                            data=serializer.data
+                        )
+                    room_to_update, _ = serializer.update(room, data, user)
+                    if room_to_update:
+                        return http_response(
+                            'User added to room.',
+                            status=status.HTTP_200_OK,
+                            data=serializer.data
+                        )
+                    return http_response(
+                        'Error adding user to room.',
+                        status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                        data=serializer.errors
+                    )
+            return http_response(
+                'Room not found',
+                status=status.HTTP_404_NOT_FOUND,
+                data=payload
+            )
+        return http_response(
+            'No params given for lookup',
+            status=status.HTTP_400_BAD_REQUEST,
+            data=payload
+        )
 
     def delete(self, request, format=None):
         query_params = self.request.query_params

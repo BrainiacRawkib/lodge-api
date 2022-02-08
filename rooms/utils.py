@@ -1,5 +1,6 @@
 import string
 import random
+from users.utils import *
 from .models import Block, Room
 
 import logging
@@ -43,7 +44,7 @@ def create_room_block(name, total_rooms):
         return None
 
 
-def create_room(room_block, room_no):
+def create_room(room_block, room_no, total_occupants):
     """Create Room."""
     try:
         if Room.objects.filter(room_block=room_block, room_no=room_no).exists():
@@ -52,6 +53,7 @@ def create_room(room_block, room_no):
             code=generate_room_code(),
             room_block=room_block,
             room_no=room_no,
+            total_occupants=total_occupants
         )
         return room
 
@@ -69,6 +71,7 @@ def get_room(room_code):
 
     except Exception as e:
         logger.error('get_room@Error')
+        print(room_code)
         logger.error(e)
         return None
 
@@ -132,3 +135,39 @@ def delete_room(room_code):
         logger.error("delete_room@Error")
         logger.error(e)
         return None
+
+
+# UPDATE MODELS
+def update_room(instance, user, validated_data):
+    try:
+        room = get_room(instance.code)
+        if room.users.count() == room.total_occupants:
+            room.available = False
+        if room.available:
+            if check_user_room_uniqueness(user):
+                room.users.add(user)
+            else:
+                return None
+        if not room.available:
+            return None
+        room.save()
+        return room
+
+    except Exception as e:
+        logger.error('update_room@Error')
+        logger.error(e)
+        return None
+
+
+# USER-ROOM OPERATIONS
+def check_user_room_uniqueness(user):
+    try:
+        user = get_user(user)
+        if user.room_occupants.count() == 0:
+            return True
+        return False
+
+    except Exception as e:
+        logger.error('check_user_room_uniqueness@Error')
+        logger.error(e)
+        return False
