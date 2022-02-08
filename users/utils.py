@@ -53,10 +53,10 @@ def update_user(instance, validated_data):
         ins = get_user(instance)
         ins.username = validated_data.get('username', ins.username)
         ins.email = validated_data.get('email', ins.email)
-        ins.password = validated_data.get('password', ins.password)
         if User.objects.exclude(username=ins.username, email=ins.email)\
                 .filter(username=ins.username, email=ins.email).exists():
             return None
+        ins.set_password(ins.password)
         ins.save()
         return ins
 
