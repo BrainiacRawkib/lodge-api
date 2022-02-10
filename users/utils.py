@@ -50,21 +50,34 @@ def get_user(username):
 
 def update_user(instance, validated_data):
     try:
-        ins = get_user(instance)
-        ins.username = validated_data.get('username', ins.username)
-        ins.email = validated_data.get('email', ins.email)
-        if User.objects.exclude(username=ins.username, email=ins.email)\
-                .filter(username=ins.username, email=ins.email).exists():
+        instance.username = validated_data.get('username', instance.username)
+        instance.email = validated_data.get('email', instance.email)
+        if User.objects.exclude(username=instance.username, email=instance.email)\
+                .filter(username=instance.username, email=instance.email).exists():
             return None
-        ins.set_password(ins.password)
-        ins.save()
-        return ins
+        instance.set_password(instance.password)
+        instance.save()
+        return instance
 
     except Exception as e:
         logger.error('update_user@Error')
         logger.error(e)
         return None
 
+
+def exclude_user(username):
+    try:
+        # if User.objects.exclude(username=user.username, email=user.email) \
+        #         .filter(username=user.username, email=user.email).exists():
+        if User.objects.exclude(username=username) \
+                .filter(username=username).exists():
+            return None
+        return True
+
+    except Exception as e:
+        logger.error('exclude_user@Error')
+        logger.error(e)
+        return None
 
 # DELETE USER
 def delete_user(user):
