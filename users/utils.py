@@ -57,7 +57,8 @@ def update_user(instance, validated_data):
             return None
         instance.set_password(instance.password)
         instance.save()
-        return instance
+        token, created = Token.objects.get_or_create(user=instance)
+        return instance, token
 
     except Exception as e:
         logger.error('update_user@Error')
