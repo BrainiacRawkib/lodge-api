@@ -57,10 +57,14 @@ class UserAPI(APIView):
 
     def put(self, request, *args, **kwargs):
         token = request.headers.get('Authorization')
+        if not token:
+            return http_response(
+                'Bad Request. Access Token missing.',
+                status=status.HTTP_400_BAD_REQUEST
+            )
         user =  get_user_by_token(token)
         payload = request.data
         if user:
-            # payload['username'] = request.user.username
             serializer = UserSerializer(data=payload)
             if serializer.is_valid():
                 data = serializer.validated_data
@@ -81,10 +85,6 @@ class UserAPI(APIView):
                 status=status.HTTP_404_NOT_FOUND,
                 data=payload
             )
-        # return http_response(
-        #     'Bad Request.',
-        #     status=status.HTTP_400_BAD_REQUEST
-        # )
 
     def delete(self, request, *args, **kwargs):
         query_params = request.query_params
