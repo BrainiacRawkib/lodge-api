@@ -56,15 +56,12 @@ class UserAPI(APIView):
         )
 
     def put(self, request, *args, **kwargs):
+        token = request.headers.get('Authorization')
+        user =  get_user_by_token(token)
         payload = request.data
-        user = get_user(request.user)
-        print(user)
         if user:
-            payload['username'] = request.user.username
+            # payload['username'] = request.user.username
             serializer = UserSerializer(data=payload)
-            # exclude_user(user)
-            print(serializer.is_valid())
-            print(serializer.errors)
             if serializer.is_valid():
                 data = serializer.validated_data
                 user_to_update, _ = serializer.update(user, data)

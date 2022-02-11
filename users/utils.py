@@ -46,6 +46,21 @@ def get_user(username):
         return None
 
 
+def get_user_by_token(token):
+    try:
+        key = token.split()
+        access_token = key[1]
+        token = Token.objects.get(key=access_token)
+        user = token.user
+        if user and user.is_active:
+            return user
+        return None
+
+    except Exception as e:
+        logger.error('get_user_by_token@Error')
+        logger.error(e)
+        return None
+
 # UPDATE MODELS
 
 def update_user(instance, validated_data):
