@@ -64,6 +64,17 @@ class UserAPI(APIView):
             )
         user =  get_user_by_token(token)
         payload = request.data
+        print(check_email(payload['email']))
+        # if 'email' in payload.keys():
+        email = payload['email']
+        if check_email(email):
+                print(check_email(email))
+                return http_response(
+                    'Email already exists.',
+                    status=status.HTTP_409_CONFLICT,
+                    data=payload
+                )
+
         if user:
             serializer = UserSerializer(data=payload)
             if serializer.is_valid():
@@ -112,6 +123,7 @@ class LoginAPI(APIView):
     def post(self, request, *args, **kwargs):
         payload = request.data
         serializer = LoginSerializer(data=payload)
+        print(serializer)
         if serializer.is_valid():
             data = serializer.validated_data
             return http_response(
