@@ -46,6 +46,21 @@ def get_user(username):
         return None
 
 
+def get_user_by_token(token):
+    try:
+        key = token.split()
+        access_token = key[1]
+        token = Token.objects.get(key=access_token)
+        user = token.user
+        if user and user.is_active:
+            return user
+        return None
+
+    except Exception as e:
+        logger.error('get_user_by_token@Error')
+        logger.error(e)
+        return None
+
 # UPDATE MODELS
 
 def update_user(instance, validated_data):
@@ -66,19 +81,20 @@ def update_user(instance, validated_data):
         return None
 
 
-def exclude_user(username):
+def update_user_email(user_email, email):
     try:
-        # if User.objects.exclude(username=user.username, email=user.email) \
-        #         .filter(username=user.username, email=user.email).exists():
-        if User.objects.exclude(username=username) \
-                .filter(username=username).exists():
-            return None
-        return True
+        if user_email == email:
+            return True
+        else:
+            if User.objects.filter(email=email).exists():
+                return False
+            return True
 
     except Exception as e:
-        logger.error('exclude_user@Error')
+        logger.error('update_user_email@Error')
         logger.error(e)
-        return None
+        return False
+
 
 # DELETE USER
 def delete_user(user):

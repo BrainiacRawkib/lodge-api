@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
-from .utils import create_user, update_user, exclude_user
+from .utils import create_user, update_user
 
 import logging
 
@@ -36,15 +36,10 @@ class UserSerializer(serializers.ModelSerializer):
             return None, str(err)
 
     def validate(self, attrs):
-        username = attrs['username']
-        if User.objects.exclude(username__iexact=username).filter(username=username).exists():
-            return serializers.ValidationError('username unique constraint')
+        email = attrs['email']
+        if User.objects.exclude(email__iexact=email).filter(email=email).exists():
+            return serializers.ValidationError('Email already exists.')
         return attrs
-
-    # def validate_username(self, value):
-    #     if User.objects.exclude(username__iexact=value).filter(username=value).exists():
-    #         return serializers.ValidationError('username unique constraint')
-    #     return value
 
 
 class LoginSerializer(serializers.Serializer):
@@ -53,6 +48,7 @@ class LoginSerializer(serializers.Serializer):
 
     def validate(self, attrs):
         user = authenticate(**attrs)
+        print(user)
         if user and user.is_active:
             return user
         raise serializers.ValidationError('Invalid Credentials.')
