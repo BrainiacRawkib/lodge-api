@@ -64,11 +64,8 @@ class UserAPI(APIView):
             )
         user =  get_user_by_token(token)
         payload = request.data
-        print(check_email(payload['email']))
-        # if 'email' in payload.keys():
         email = payload['email']
-        if check_email(email):
-                print(check_email(email))
+        if not update_user_email(user.email, email):
                 return http_response(
                     'Email already exists.',
                     status=status.HTTP_409_CONFLICT,

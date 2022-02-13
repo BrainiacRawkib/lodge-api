@@ -81,6 +81,21 @@ def update_user(instance, validated_data):
         return None
 
 
+def update_user_email(user_email, email):
+    try:
+        if user_email == email:
+            return True
+        else:
+            if User.objects.filter(email=email).exists():
+                return False
+            return True
+
+    except Exception as e:
+        logger.error('update_user_email@Error')
+        logger.error(e)
+        return False
+
+
 # DELETE USER
 def delete_user(user):
     try:
@@ -92,18 +107,3 @@ def delete_user(user):
         logger.error('delete_user@Error')
         logger.error(e)
         return False
-
-
-# CHECK DB CONSTRAINTS
-def check_email(email):
-    try:
-        user = User.objects.exclude(email=email)
-        if email in user:
-            return None
-        return True
-        # return User.objects.exclude(email=email).filter(email=email).exists()
-
-    except Exception as e:
-        logger.error('update_user_email@Error')
-        logger.error(e)
-        return None
