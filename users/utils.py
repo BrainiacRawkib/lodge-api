@@ -46,24 +46,54 @@ def get_user(username):
         return None
 
 
+def get_user_by_token(token):
+    try:
+        key = token.split()
+        access_token = key[1]
+        token = Token.objects.get(key=access_token)
+        user = token.user
+        if user and user.is_active:
+            return user
+        return None
+
+    except Exception as e:
+        logger.error('get_user_by_token@Error')
+        logger.error(e)
+        return None
+
 # UPDATE MODELS
 
 def update_user(instance, validated_data):
     try:
-        ins = get_user(instance)
-        ins.username = validated_data.get('username', ins.username)
-        ins.email = validated_data.get('email', ins.email)
-        ins.password = validated_data.get('password', ins.password)
-        if User.objects.exclude(username=ins.username, email=ins.email)\
-                .filter(username=ins.username, email=ins.email).exists():
+        instance.username = validated_data.get('username', instance.username)
+        instance.email = validated_data.get('email', instance.email)
+        if User.objects.exclude(username=instance.username, email=instance.email)\
+                .filter(username=instance.username, email=instance.email).exists():
             return None
-        ins.save()
-        return ins
+        instance.set_password(instance.password)
+        instance.save()
+        token, created = Token.objects.get_or_create(user=instance)
+        return instance, token
 
     except Exception as e:
         logger.error('update_user@Error')
         logger.error(e)
         return None
+
+
+def update_user_email(user_email, email):
+    try:
+        if user_email == email:
+            return True
+        else:
+            if User.objects.filter(email=email).exists():
+                return False
+            return True
+
+    except Exception as e:
+        logger.error('update_user_email@Error')
+        logger.error(e)
+        return False
 
 
 # DELETE USER
