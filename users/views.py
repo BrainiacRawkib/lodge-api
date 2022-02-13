@@ -8,6 +8,13 @@ from .utils import *
 
 class UserAPI(APIView):
     def get(self, request, *args, **kwargs):
+        token = request.headers.get('Authorization')
+        if not token:
+            return http_response(
+                'Bad Request. Access Token missing.',
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
         users = get_all_users()
         serializer = UserSerializer(users, many=True)
         query_params = request.query_params
@@ -62,15 +69,17 @@ class UserAPI(APIView):
                 'Bad Request. Access Token missing.',
                 status=status.HTTP_400_BAD_REQUEST
             )
+
         user =  get_user_by_token(token)
         payload = request.data
         email = payload['email']
+
         if not update_user_email(user.email, email):
-                return http_response(
-                    'Email already exists.',
-                    status=status.HTTP_409_CONFLICT,
-                    data=payload
-                )
+            return http_response(
+                'Email already exists.',
+                status=status.HTTP_409_CONFLICT,
+                data=payload
+            )
 
         if user:
             serializer = UserSerializer(data=payload)
@@ -95,24 +104,29 @@ class UserAPI(APIView):
             )
 
     def delete(self, request, *args, **kwargs):
-        query_params = request.query_params
-        if query_params:
-            user = query_params['username']
-            if user:
-                user_to_delete = delete_user(user)
+        token = request.headers.get('Authorization')
+        if not token:
+            return http_response(
+                'Bad Request. Access Token missing.',
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        user = get_user_by_token(token)
 
-                if user_to_delete:
-                    return http_response(
-                        'User deleted.',
-                        status=status.HTTP_204_NO_CONTENT,
-                    )
+        if user:
+            user_to_delete = delete_user(user)
+
+            if user_to_delete:
                 return http_response(
-                    'User not found or already deleted.',
-                    status=status.HTTP_404_NOT_FOUND
+                    'User deleted.',
+                    status=status.HTTP_204_NO_CONTENT,
                 )
+            return http_response(
+                'User already deleted.',
+                status=status.HTTP_404_NOT_FOUND
+            )
         return http_response(
-            'No username param passed.',
-            status=status.HTTP_400_BAD_REQUEST
+            'User not found.',
+            status=status.HTTP_404_NOT_FOUND
         )
 
 
